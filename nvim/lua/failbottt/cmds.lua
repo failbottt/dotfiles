@@ -1,6 +1,6 @@
 local cmd = vim.cmd
 
--- Highlight on yank
+-- go fmt on write
 cmd [[
   augroup GoWriteFile
     autocmd!

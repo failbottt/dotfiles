@@ -39,7 +39,7 @@ call s:HL('String'      , s:green  , 'NONE' , 'NONE' )
 call s:HL('Number'      , s:magenta , 'NONE' , 'NONE' )
 call s:HL('Boolean'     , s:magenta , 'NONE' , 'NONE' )
 call s:HL('Float'       , s:magenta , 'NONE' , 'NONE' )
-call s:HL('Constant'    , s:light , 'NONE' , 'NONE' )
+call s:HL('Constant'    , s:magenta , 'NONE' , 'NONE' )
 call s:HL('Character'   , s:magenta , 'NONE' , 'NONE' )
 call s:HL('SpecialChar' , s:magenta , 'NONE' , 'NONE' )
 
@@ -159,3 +159,4 @@ call s:HL('vimCommentString' , s:gray0 , 'NONE' , 'NONE' )
 call s:HL('NERDTreeCWD'            , s:gray1 , 'NONE' , 'NONE' )
 call s:HL('NERDTreeFile'           , s:light , 'NONE' , 'NONE' )
 call s:HL('NERDTreeNodeDelimiters' , s:light , 'NONE' , 'NONE' )
+
