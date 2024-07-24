@@ -7,22 +7,21 @@ let g:colors_name = "yami"
 
 
 " Color palette
-let s:lime   = "#ffb700"
-let s:light  = "#d4d4d5"
-let s:dark   = "#000000"
-let s:gray0  = "#666666"
-let s:gray1  = "#323232"
-let s:gray2  = "#23242a"
-let s:gray3  = "#2b2b2b"
-let s:yellow = "#ffe59e"
-let s:blue   = "#7DA7CA"
-let s:blue   = "#7DA7CA"
-let s:green  = "#79dcaa"
-let s:red    = "#f87070"
-
-let s:green = "#acd48b"
-let s:comments = "#7C7C7C"
-let s:magenta = "#DE98DD"
+let s:light         = "#d4d4d5"
+let s:dark          = "#000000"
+let s:gray0         = "#666666"
+let s:gray1         = "#323232"
+let s:gray2         = "#23242a"
+let s:gray3         = "#2b2b2b"
+let s:yellow        = "#ffe59e"
+let s:line_yellow   = "#ffbc01"
+let s:blue          = "#7DA7CA"
+let s:select_blue   = "#0000AA"
+let s:green         = "#79dcaa"
+let s:red           = "#AA0000"
+let s:green         = "#acd48b"
+let s:comments      = "#7C7C7C"
+let s:magenta       = "#DE98DD"
 
 " Highlight helper function
 function! s:HL(item, fgColor, bgColor, style)
@@ -32,7 +31,6 @@ function! s:HL(item, fgColor, bgColor, style)
 	let command .= ' ' . 'gui' . '=' . a:style
 	execute command
 endfunction
-
 
 " Primitives
 call s:HL('String'      , s:green  , 'NONE' , 'NONE' )
@@ -51,14 +49,14 @@ call s:HL('SpecialComment' , s:gray0  , 'NONE' , 'NONE' )
 
 " Lines                  , Columns
 call s:HL('LineNr'       , s:gray0 , 'NONE'  , 'NONE' )
-call s:HL('CursorLine'   , 'NONE'  , s:gray3 , 'NONE' )
+call s:HL('CursorLine'   , s:dark  , s:yellow , 'NONE' )
 call s:HL('CursorLineNr' , s:light , s:gray3, 'NONE'  )
 call s:HL('SignColumn'   , s:gray3 , s:dark  , 'NONE' )
 call s:HL('ColorColumn'  , s:light , s:gray3 , 'NONE' )
 call s:HL('CursorColumn' , s:light , s:gray3 , 'NONE' )
 
 " Visual
-call s:HL('Visual'    , 'NONE'   , s:gray1 , 'NONE' )
+call s:HL('Visual'    , s:light   , s:select_blue , 'NONE' )
 call s:HL('VisualNOS' , s:gray3  , s:light , 'NONE' )
 call s:HL('Search'    , s:yellow , s:gray0 , 'NONE' )
 call s:HL('IncSearch' , s:yellow , s:gray0 , 'NONE' )
@@ -159,4 +157,3 @@ call s:HL('vimCommentString' , s:gray0 , 'NONE' , 'NONE' )
 call s:HL('NERDTreeCWD'            , s:gray1 , 'NONE' , 'NONE' )
 call s:HL('NERDTreeFile'           , s:light , 'NONE' , 'NONE' )
 call s:HL('NERDTreeNodeDelimiters' , s:light , 'NONE' , 'NONE' )
-
