@@ -50,16 +50,16 @@ call s:HL('SpecialComment' , s:gray0  , 'NONE' , 'NONE' )
 " Lines                  , Columns
 call s:HL('LineNr'       , s:gray0 , 'NONE'  , 'NONE' )
 call s:HL('CursorLine'   , s:light  , s:line, 'NONE' )
-call s:HL('CursorLineNr' , s:light , s:gray3, 'NONE'  )
+call s:HL('CursorLineNr' , s:light , s:line, 'NONE'  )
 call s:HL('SignColumn'   , s:gray3 , s:dark  , 'NONE' )
 call s:HL('ColorColumn'  , s:light , s:gray3 , 'NONE' )
 call s:HL('CursorColumn' , s:light , s:gray3 , 'NONE' )
 
 " Visual
-call s:HL('Visual'    , s:light   , s:select_blue , 'NONE' )
-call s:HL('VisualNOS' , s:gray3  , s:light , 'NONE' )
-call s:HL('Search'    , s:yellow , s:gray0 , 'NONE' )
-call s:HL('IncSearch' , s:yellow , s:gray0 , 'NONE' )
+call s:HL('Visual'    , s:light   , s:green , 'NONE' )
+call s:HL('VisualNOS' , s:light  , s:light , 'NONE' )
+call s:HL('Search'    , s:yellow , s:green , 'NONE' )
+call s:HL('IncSearch' , s:yellow , s:green , 'NONE' )
 
 " Spelling
 call s:HL('SpellBad'   , s:red , s:dark , 'NONE' )
@@ -113,7 +113,7 @@ call s:HL('FoldColumn'	  , s:light, s:gray3 , 'NONE' )
 call s:HL('Folded'		  , s:light, s:gray3 , 'NONE' )
 
 " Parens
-call s:HL('MatchParen'	  , s:dark, s:light , 'NONE' )
+call s:HL('MatchParen'	  , s:dark, s:yellow , 'NONE' )
 
 " Popup Menu
 call s:HL('Pmenu'      , s:light , s:gray1 , 'NONE' )
