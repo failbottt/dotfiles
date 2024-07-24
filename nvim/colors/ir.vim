@@ -14,7 +14,7 @@ let s:gray1         = "#323232"
 let s:gray2         = "#23242a"
 let s:gray3         = "#2b2b2b"
 let s:yellow        = "#ffe59e"
-let s:line_yellow   = "#ffbc01"
+let s:line          = "#464646"
 let s:blue          = "#7DA7CA"
 let s:select_blue   = "#0000AA"
 let s:green         = "#79dcaa"
@@ -49,7 +49,7 @@ call s:HL('SpecialComment' , s:gray0  , 'NONE' , 'NONE' )
 
 " Lines                  , Columns
 call s:HL('LineNr'       , s:gray0 , 'NONE'  , 'NONE' )
-call s:HL('CursorLine'   , s:dark  , s:yellow , 'NONE' )
+call s:HL('CursorLine'   , s:light  , s:line, 'NONE' )
 call s:HL('CursorLineNr' , s:light , s:gray3, 'NONE'  )
 call s:HL('SignColumn'   , s:gray3 , s:dark  , 'NONE' )
 call s:HL('ColorColumn'  , s:light , s:gray3 , 'NONE' )
