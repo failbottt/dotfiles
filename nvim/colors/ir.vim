@@ -49,17 +49,17 @@ call s:HL('SpecialComment' , s:gray0  , 'NONE' , 'NONE' )
 
 " Lines                  , Columns
 call s:HL('LineNr'       , s:gray0 , 'NONE'  , 'NONE' )
-call s:HL('CursorLine'   , s:light  , s:line, 'NONE' )
-call s:HL('CursorLineNr' , s:light , s:line, 'NONE'  )
+call s:HL('CursorLine'   , 'NONE'  , s:line, 'NONE' )
+call s:HL('CursorLineNr' , 'NONE' , s:line, 'NONE'  )
 call s:HL('SignColumn'   , s:gray3 , s:dark  , 'NONE' )
 call s:HL('ColorColumn'  , s:light , s:gray3 , 'NONE' )
 call s:HL('CursorColumn' , s:light , s:gray3 , 'NONE' )
 
 " Visual
-call s:HL('Visual'    , s:light   , s:green , 'NONE' )
-call s:HL('VisualNOS' , s:light  , s:light , 'NONE' )
-call s:HL('Search'    , s:yellow , s:green , 'NONE' )
-call s:HL('IncSearch' , s:yellow , s:green , 'NONE' )
+call s:HL('Visual'    , 'NONE' , s:yellow , 'NONE' )
+call s:HL('VisualNOS' , 'NONE' , s:light  , 'NONE' )
+call s:HL('Search'    , 'NONE' , s:yellow , 'NONE' )
+call s:HL('IncSearch' , 'NONE' , s:yellow , 'NONE' )
 
 " Spelling
 call s:HL('SpellBad'   , s:red , s:dark , 'NONE' )
