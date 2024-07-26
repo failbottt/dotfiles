@@ -20,7 +20,7 @@ if [ "$OS" == "Linux" ]; then
     done
 
     # key repeat delay
-    xset r rate 300 50
+    xset r rate 150 50
 
     # set capslock as ctrl
     setxkbmap -option caps:ctrl_modifier
