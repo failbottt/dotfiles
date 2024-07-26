@@ -6,20 +6,6 @@ lsp.ensure_installed({
   'gopls',
 })
 
-lsp.setup()
-
-lsp.set_preferences({
-    sign_icons = {}
-})
-
-local lsp = require("lsp-zero")
-
-lsp.preset("recommended")
-
-lsp.ensure_installed({
-  'gopls',
-})
-
 -- Fix Undefined global 'vim'
 lsp.configure('lua-language-server', {
     settings = {

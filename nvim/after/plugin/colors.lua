@@ -1,1 +1,1 @@
-vim.cmd('colorscheme ir')
+vim.cmd('colorscheme simple-dark')

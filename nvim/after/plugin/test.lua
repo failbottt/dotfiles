@@ -18,6 +18,7 @@ require('nvim-test').setup {
     }
 }
 
+vim.keymap.set("n", "<leader>T", ":TestFile<cr>")
 vim.keymap.set("n", "<leader>t", ":TestNearest<cr>")
 vim.keymap.set("n", "<leader>l", ":TestLast<cr>")
 vim.keymap.set("n", "<leader>v", ":TestVisit<cr>")
