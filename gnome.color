@@ -1,0 +1,17 @@
+[:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+background-color='rgb(10,10,10)'
+cursor-background-color='rgb(184,184,180)'
+cursor-foreground-color='rgb(170,171,166)'
+custom-command='tmux'
+font='Hack 12'
+foreground-color='rgb(170,171,166)'
+highlight-background-color='rgb(184,185,180)'
+login-shell=false
+palette=['rgb(10,10,10)', 'rgb(209,3,18)', 'rgb(94,94,92)', 'rgb(182,184,179)', 'rgb(114,115,112)', 'rgb(209,209,203)', 'rgb(99,99,97)', 'rgb(170,171,166)', 'rgb(46,46,44)', 'rgb(246,97,81)', 'rgb(99,99,97)', 'rgb(187,189,184)', 'rgb(119,119,133)', 'rgb(214,214,208)', 'rgb(105,105,102)', 'rgb(175,176,171)']
+preserve-working-directory='always'
+scroll-on-keystroke=false
+scroll-on-output=false
+scrollback-lines=30000
+use-custom-command=true
+use-theme-colors=false
+visible-name='failbot'
