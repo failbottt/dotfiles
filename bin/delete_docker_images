@@ -1,0 +1,5 @@
+#!/bin/bash
+
+TERM=$1
+
+docker image list --all | grep ${TERM} | awk '{print $3}' | xargs docker image rm

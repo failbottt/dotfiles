@@ -1,0 +1,5 @@
+#!/bin/bash
+
+TERM=$1
+
+docker container list --all | grep ${TERM} | awk '{print $1}' | xargs docker container rm
