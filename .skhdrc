@@ -1,3 +1,4 @@
 cmd - 1 : open -a iTerm
 cmd - 2 : open -a Google\ Chrome
 cmd - 3 : open -a Slack
+cmd - 4 : open -a /Applications/Spotify.app/
