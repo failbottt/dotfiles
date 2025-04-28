@@ -10,7 +10,7 @@ set background=dark
 if exists("syntax_on")
     syntax reset
 endif
-let g:colors_name = "simple-dark"
+let g:colors_name = "dark"
 
 
 if has("gui_running") || &t_Co == 256
@@ -115,7 +115,7 @@ highlight! link WarningMsg Number
 highlight! link iCursor SpecialKey
 highlight! link SpellLocal SpellCap
 highlight! link LineNr Comment
-highlight! link NonText NonText 
+highlight! link NonText NonText
 highlight! link DiffDelete Comment
 highlight! link diffRemoved Comment
 highlight! link PmenuSbar Visual
