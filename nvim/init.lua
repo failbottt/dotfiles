@@ -1,8 +1,10 @@
 -- COLOR
+--
 vim.opt.background = "dark"
 vim.cmd.colorscheme("black")
 
 -- OPTIONS
+--
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
@@ -22,9 +24,9 @@ vim.opt.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
 vim.opt.signcolumn = "yes"
-vim.opt.shell = "/bin/bash"
 
 -- KEY MAPS
+--
 vim.g.mapleader = ","
 vim.keymap.set('n', '-', ":Ex<cr>", {})
 vim.keymap.set("n", "<leader><leader>", "<C-^>")
@@ -55,6 +57,7 @@ if vim.loader then
 end
 
 -- DISABLE UNUSED PLUGINS
+--
 local disabled_built_ins = {
   "gzip",
   "tar",
@@ -73,6 +76,8 @@ for _, plugin in pairs(disabled_built_ins) do
   vim.g["loaded_" .. plugin] = 1
 end
 
+-- LAZY
+--
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -81,7 +86,6 @@ if not vim.loop.fs_stat(lazypath) then
   })
 end
 vim.opt.rtp:prepend(lazypath)
-
 require("lazy").setup({
   -- Telescope (fuzzy finder)
   {
@@ -119,9 +123,64 @@ require("lazy").setup({
           require('telescope').load_extension('fzf')
       end
   },
+
+  {
+      "sindrets/diffview.nvim",
+      dependencies = { "nvim-lua/plenary.nvim" },
+      config = function()
+          require("diffview").setup({
+              enhanced_diff_hl = true, -- Enhanced highlights
+              view = {
+                  merge_tool = {
+                      layout = "diff3_mixed", -- 3-way diff for merge conflicts
+                      disable_diagnostics = true,
+                  },
+              },
+              file_panel = {
+                  listing_style = "tree", -- "tree" or "list"
+                  win_config = { position = "left", width = 35 },
+              },
+          })
+      end,
+      cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFileHistory" },
+      keys = {
+          { "<leader>d", "<cmd>DiffviewOpen<CR>", desc = "Open Git Diff View" },
+          { "<leader>D", "<cmd>DiffviewFileHistory<CR>", desc = "File History (Git)" },
+          { "<leader>gx", "<cmd>DiffviewClose<CR>", desc = "Close Diff View" },
+      },
+  },
+})
+
+-- DIFFVIEW COLORS
+--
+-- Dark background diff color patch
+vim.api.nvim_set_hl(0, "DiffAdd", {
+  fg = "#B5F4A5",    -- soft green text
+  bg = "#1C2B1B",    -- very dark greenish background
+  blend = 0,
+})
+
+vim.api.nvim_set_hl(0, "DiffChange", {
+  fg = "#AAC7FF",    -- soft blue text
+  bg = "#1B2535",    -- very dark bluish background
+  blend = 0,
+})
+
+vim.api.nvim_set_hl(0, "DiffDelete", {
+  fg = "#FFBBBB",    -- soft pinkish text
+  bg = "#351B1B",    -- very dark reddish background
+  blend = 0,
+})
+
+vim.api.nvim_set_hl(0, "DiffText", {
+  fg = "#FFFFFF",    -- white text
+  bg = "#1F3552",    -- deep blue for intense changes
+  bold = true,
+  blend = 0,
 })
 
 -- TELESCOPE KEYMAPS
+--
 require('telescope').setup{
     defaults = {
         layout_strategy = 'horizontal',
@@ -179,6 +238,7 @@ vim.keymap.set("n", "S", function()
 end)
 
 -- LSP BASIC SETUP
+--
 local lspconfig = require('lspconfig')
 
 local on_attach = function(_, bufnr)
@@ -226,10 +286,15 @@ lspconfig.intelephense.setup({
     },
   },
 })
+lspconfig.clangd.setup{
+    on_attach = on_attach,
+}
+
 -- FILES
+--
 vim.api.nvim_create_augroup("FormatFilesOnSave", { clear = true })
 
-vim.api.nvim_create_autocmd("BufWritePre", {
+vim.api.nvim_create_autocmd("BufWritePost", {
   group = "FormatFilesOnSave",
   pattern = "*",
   callback = function()
@@ -238,8 +303,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
     -- 2. If it's a Go file, run gofmt
     if vim.bo.filetype == "go" then
-      vim.cmd("silent! !gofmt -w %")
-      vim.cmd("edit!")  -- reload buffer after external format
+      vim.cmd [[silent !gofmt -w %]]
     end
   end,
 })
@@ -261,10 +325,8 @@ vim.api.nvim_create_autocmd("BufReadPre", {
   end,
 })
 
--- FILES
-
 -- DIAGNOSTICS
-
+--
 vim.api.nvim_create_autocmd("CursorHold", {
   callback = function()
     vim.diagnostic.open_float(nil, {
@@ -288,8 +350,6 @@ vim.keymap.set('n', '<leader>c', function()
     vim.notify("No diagnostic under cursor", vim.log.levels.WARN)
   end
 end, { desc = "Copy Diagnostic Message" })
--- DIAGNOSTICS END
-
 
 -- FLOATING WINDOW
 --
@@ -314,10 +374,9 @@ function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
 
   return orig_util_open_floating_preview(contents, syntax, opts, ...)
 end
--- FLOATING WINDOW
 
 -- PROVIDERS
-
+--
 -- Smart disabling of unused providers
 local function disable_unused_providers()
   -- Always disable these by default
@@ -361,6 +420,4 @@ local function check_providers()
     end
   end
 end
-
--- You can manually call this with:
 vim.api.nvim_create_user_command('CheckProviders', check_providers, {})
