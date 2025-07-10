@@ -15,6 +15,7 @@ fi
 export EDITOR=nvim
 alias vi=$EDITOR
 alias vim=$EDITOR
+
 # open large files without any plugins or syntax
 alias cvim="vim -u ~/.config/nvim/large-file.vim"
 
@@ -30,6 +31,9 @@ export GO_VERSION=go1.24.0
 alias ls="ls -laG"
 alias ag="ag --path-to-ignore ~/.ignore"
 alias fix="git diff --name-only | uniq | xargs $EDITOR"
+alias notes="vim ~/notes.txt"
+alias todos="vim ~/todos.txt"
+alias logs="vim ~/logs.txt"
 
 # controls fonts for https://github.com/failbottt/go_debugger
 export GDLV_NORMAL_FONT="hack.ttf"
@@ -37,9 +41,9 @@ export GDLV_BOLD_FONT="hack_bold.ttf"
 
 # functions
 # --------------
-mkcd() { 
-  mkdir -pv $1 
-  cd $1 
+mkcd() {
+  mkdir -pv $1
+  cd $1
 }
 
 copy() {
@@ -53,6 +57,16 @@ copy() {
 function docker_fix_ssh() {
     ps aux | grep ssh | awk '{print $2}' | xargs kill -9
     eval `ssh-agent -s` && ssh-add ~/.ssh/id_rsa
+}
+
+function kill_vim_instances()
+{
+    killall -9 nvim
+}
+
+function kill_all_docker_containers()
+{
+    docker container list | awk '{print $1}' | grep -v CONTAINER | xargs -I {} docker container stop {}
 }
 
 function _makefile_targets {
