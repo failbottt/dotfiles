@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Paths
+TODO=~/todos.txt
+LOG=~/logs.txt
+
+# Calculate yesterday's date
+if date --version >/dev/null 2>&1; then # GNU date
+    YESTERDAY=$(date -d "yesterday" '+%Y-%m-%d')
+else # macOS BSD date
+    YESTERDAY=$(date -v-1d '+%Y-%m-%d')
+fi
+
+# 1. What did you do yesterday?
+echo "1. What did you do yesterday?"
+awk -v date="$YESTERDAY" '
+    $0 ~ "^"date"$" {show=1; next}
+    show && $0 ~ "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" {show=0}
+    show && NF { sub(/^ *\[[0-9:]{8}\] /, "", $0); print "- " $0 }
+' "$LOG"
+
+echo
+
+# 2. What will you do today?
+echo "2. What will you do today?"
+awk '/^### Current$/ {show=1; next}
+      show && /^-/ {print $0}
+      show && NF==0 {exit}
+      show && !/^-/ {exit}
+' "$TODO"
+
+echo
