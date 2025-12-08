@@ -1,0 +1,11 @@
+The idea here is that my environment "just works"(TM) if a machine has vim.
+
+`.profile`: drop in $HOME and run `sh -l` to load it.
+`.vimrc`: drop in $HOME on any machine that has vim
+`.skhdrc`: osx hotkeys to quick navigate common apps
+
+`colors/`: terminal color profiles that I want to keep around
+
+`bin/`: scripts that I keep around
+
+`docs/`: stuff I probably rarely use but when I need it I need it.

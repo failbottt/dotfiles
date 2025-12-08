@@ -1,4 +1,73 @@
-" Vim color file
+" ---------------------------------
+" Minimal, portable Vim configuration
+" ---------------------------------
+if has("syntax")
+    syntax on
+endif
+
+" Set leader key to ,
+let mapleader = ","
+
+" Jump back to previous file with <leader><leader>
+nnoremap <leader><leader> <C-^>
+
+" Navigate splits with Ctrl + h/j/k/l
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" Use vim-compatible mode (close to classic vi)
+set nocompatible
+
+" Allow backspace over everything
+set backspace=indent,eol,start
+
+" Show line numbers
+set number
+
+" Highlight current line
+set cursorline
+
+" Enable incremental search
+set incsearch
+
+" Enable autoindent
+set ai
+
+" Case-insensitive search unless uppercase used
+set ignorecase
+set smartcase
+
+" Show matching brackets
+set showmatch
+
+" No swap files (makes it easier to drop anywhere)
+set noswapfile
+
+" Simple status line
+set laststatus=2
+
+" Use spaces instead of tabs (optional, portable)
+set expandtab
+set shiftwidth=4
+set softtabstop=4
+
+" Minimal visual tweaks
+set showcmd          " show partial commands
+set ruler            " show cursor position
+
+" Keep it fast and simple
+set lazyredraw
+
+" Disable insert-mode autocomplete completely
+set completeopt=
+set complete=
+set nospell
+
+" color scheme (h/t Devon - he's the best)
+
+" ---
 " Name:       simple-dark
 " Maintainer: Devon / Tek256 <Devon@tek256.com>
 " Homepage:   https://github.com/tek256/simple-dark
@@ -12,9 +81,8 @@ if exists("syntax_on")
 endif
 let g:colors_name = "dark"
 
-
 if has("gui_running") || &t_Co == 256
-	hi NonText cterm=NONE ctermfg=black ctermbg=black gui=NONE guifg=bg guibg=#0a0a0a
+    hi NonText ctermfg=236 ctermbg=NONE guifg=#303030 guibg=#0a0a0a
     hi Normal cterm=NONE ctermfg=250 ctermbg=black gui=NONE guifg=#bcbcbc guibg=#0a0a0a
     hi Keyword cterm=NONE ctermfg=255 ctermbg=black gui=NONE guifg=#eeeeee guibg=#0a0a0a
     hi Constant cterm=NONE ctermfg=252 ctermbg=black gui=NONE guifg=#d0d0d0 guibg=#0a0a0a
