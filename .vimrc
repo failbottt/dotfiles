@@ -65,8 +65,40 @@ set completeopt=
 set complete=
 set nospell
 
-" color scheme (h/t Devon - he's the best)
+function! CopySelectionToClipboard() range
+  let l:temp = tempname()
 
+  " Write visual selection to a temp file
+  execute a:firstline . "," . a:lastline . "write" l:temp
+
+  " Choose platform command
+  if has("mac")
+    let l:cmd = "pbcopy"
+  elseif has("unix")
+    " Prefer xclip, then xsel
+    if executable("xclip")
+      let l:cmd = "xclip -selection clipboard"
+    elseif executable("xsel")
+      let l:cmd = "xsel --clipboard --input"
+    else
+      echoerr "No system clipboard tool found (install xclip or xsel)"
+      return
+    endif
+  elseif has("win32") || has("win64") || has("win32unix")
+    let l:cmd = "clip.exe"
+  else
+    echoerr "Unsupported OS for system clipboard copy"
+    return
+  endif
+
+  " Perform the copy
+  call system(l:cmd, join(readfile(l:temp), "\n"))
+  call delete(l:temp)
+  echo "Copied to system clipboard"
+endfunction
+xnoremap <leader>y :<C-u>call CopySelectionToClipboard()<CR>
+
+" color scheme (h/t Devon - he's the best)
 " ---
 " Name:       simple-dark
 " Maintainer: Devon / Tek256 <Devon@tek256.com>
