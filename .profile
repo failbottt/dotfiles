@@ -16,35 +16,6 @@ export GO_VERSION=go1.24.0
 alias ls="ls -laG"
 alias fix="git diff --name-only | uniq | xargs $EDITOR"
 
-f() {
-    # List of directories to ignore
-    local ignore_dirs=(
-    ./node_modules ./.git ./.venv ./env ./__pycache__ ./build ./vendor ./composer
-    ./dist ./.next ./.cache ./coverage ./target ./out ./.gradle ./bin ./pkg
-    ./.idea ./.vscode ./.svn ./.hg
-    )
-
-    # Start building the find prune expression
-    local prune_expr=""
-    for d in "${ignore_dirs[@]}"; do
-    prune_expr="$prune_expr -path \"$d\" -o"
-    done
-
-    # Remove trailing -o
-    prune_expr="${prune_expr% -o}"
-
-    # Execute find with proper escaping for parentheses
-    eval find . \\( $prune_expr \\) -prune -o -type f \
-    ! -name "*.log" \
-    ! -name "*.tmp" \
-    ! -name "*.pyc" \
-    ! -name "*.class" \
-    ! -name "*.o" \
-    ! -name "*.exe" \
-    ! -name "*.dll" \
-    "$@" -print
-}
-
 s()
 {
   grep -r \
