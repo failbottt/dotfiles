@@ -68,6 +68,7 @@ function! SearchPromptQuickfix() abort
 
   " Open quickfix window
   copen
+
 endfunction
 
 " Map backslash to trigger the search prompt
@@ -104,7 +105,14 @@ function! SearchFilesQuickfix() abort
 
   " Open quickfix window
   copen
+
 endfunction
 
 " Map to key, e.g., backslash + f
 nnoremap <leader>f :call SearchFilesQuickfix()<CR>
+
+" close quickfix window after hitting enter to select an entry
+augroup QuickfixEnterClose
+  autocmd!
+  autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
+augroup END
