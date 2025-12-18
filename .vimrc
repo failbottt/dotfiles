@@ -1,93 +1,64 @@
-color industry
+if has("termguicolors")
+  set termguicolors
+endif
+color slate
 
 let mapleader = ","
-
 nnoremap <leader><leader> <C-^>
 
-" use vim-compatible mode (close to classic vi)
 set nocompatible
-" allow backspace over everything set backspace=indent,eol,start
-" show line numbers
-set number
-
-" highlight current line
+set backspace=indent,eol,start
+" set number
 set cursorline
-
-" enable incremental search
 set incsearch
-" enable autoindent
-set ai
-
-" case-insensitive search unless uppercase used
+set autoindent
 set ignorecase
 set smartcase
-
-" show matching brackets
 set showmatch
-
-" no swap files (makes it easier to drop anywhere)
 set noswapfile
-
-" simple status line
 set laststatus=2
-
-" use spaces instead of tabs (optional, portable)
 set expandtab
 set shiftwidth=4
 set softtabstop=4
-
-" minimal visual tweaks
-set showcmd          " show partial commands
-set ruler            " show cursor position
-
-" keep it fast and simple
-set lazyredraw
-
-" disable insert-mode autocomplete completely
+set showcmd
+set ruler
+set hidden
 set completeopt=
 set complete=
 set nospell
 
-" Use ripgrep for :grep
 set wildignore+=*/node_modules/*,*/vendor/*,*/__pycache__/*,*.o,*.a,*.so,*.exe
 if executable('rg')
   set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 endif
-nnoremap S :silent! execute 'grep' expand('<cword>')<CR>:copen<CR>
 
-" Function to search user input and open quickfix
-function! SearchPromptQuickfix() abort
-  " Prompt the user for a search term (regex allowed)
+nnoremap S :silent! execute 'grep' expand('<cword>')<CR>:copen<CR>:redraw!<CR>
+
+function! ST() abort
   let l:term = input('st: ')
   if empty(l:term)
     return
   endif
 
-  " Use :grep (which now calls rg) with the term
   silent! execute 'grep! ' . l:term
 
-  " Open quickfix window
   copen
-
+  redraw!
 endfunction
+nnoremap \ :call ST()<CR>
 
-" Map backslash to trigger the search prompt
-nnoremap \ :call SearchPromptQuickfix()<CR>
-
-function! SearchFilesQuickfix() abort
-  " Prompt the user for a search term
+function! SF() abort
   let l:term = input('sf: ')
   if empty(l:term)
       return
   endif
 
-  " Populate quickfix with file names
+    let l:save_view = winsaveview()
+
   silent! execute 'grep! --files --glob "*' . l:term . '*" ./'
 
-  " Fetch the current quickfix list
   let qf = getqflist()
 
-  " Build proper quickfix entries as dictionaries
   let entries = []
   for item in qf
       if has_key(item, 'text') && !empty(item.text)
@@ -100,19 +71,73 @@ function! SearchFilesQuickfix() abort
       endif
   endfor
 
-  " Replace quickfix list
   call setqflist(entries)
 
-  " Open quickfix window
-  copen
+  if !empty(entries)
+      copen
+  endif
 
+  call winrestview(l:save_view)
+  redraw!
+endfunction
+nnoremap <leader>f :call SF()<CR>
+
+function! COPY()
+  let l:save_reg = getreg('"')
+  let l:save_regtype = getregtype('"')
+
+  silent normal! gvy
+  let l:text = getreg('"')
+
+  call setreg('"', l:save_reg, l:save_regtype)
+
+  if executable('xsel')
+    call system('xsel --clipboard --input', l:text)
+  elseif executable('xclip')
+    call system('xclip -selection clipboard', l:text)
+  elseif executable('pbcopy')
+    call system('pbcopy', l:text)
+  elseif executable('copy')
+    call system('copy', l:text)
+  else
+    echoerr 'No clipboard utility found (xsel, xclip, pbcopy, copy)'
+    return
+  endif
+  echo 'copied'
+endfunction
+vnoremap <leader>y :<C-u>call COPY()<CR>
+
+function! LIST_BUFFERS()
+    " 1. getbufinfo({'buflisted': 1}) gets detailed info for all listed buffers
+    " 2. map() converts that info into the format setqflist() expects
+    let l:list = map(getbufinfo({'buflisted': 1}), '{
+                \ "bufnr": v:val.bufnr,
+                \ "lnum": v:val.lnum,
+                \ "col": 1,
+                \ "text": "Buffer: " . bufname(v:val.bufnr)
+                \ }')
+
+    " Set the quickfix list and open the window
+    call setqflist(l:list)
+    copen
+    redraw!
+endfunction
+nnoremap <leader>b :<C-u>call LIST_BUFFERS()<CR>
+
+function! TRIM_TRAILING_WHITESPACE()
+  let l:save_cursor = getpos(".")
+  %s/\s\+$//e
+  call setpos('.', l:save_cursor)
 endfunction
 
-" Map to key, e.g., backslash + f
-nnoremap <leader>f :call SearchFilesQuickfix()<CR>
+if exists(':augroup')
+  augroup trim_whitespace_on_save
+    autocmd!
+    autocmd BufWritePre * call TRIM_TRAILING_WHITESPACE()
+  augroup END
 
-" close quickfix window after hitting enter to select an entry
-augroup QuickfixEnterClose
-  autocmd!
-  autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
-augroup END
+  augroup close_quickfix_on_enter
+      autocmd!
+      autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
+  augroup END
+endif
