@@ -32,55 +32,83 @@ if executable('rg')
   set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 endif
 
-nnoremap S :silent! execute 'grep' expand('<cword>')<CR>:copen<CR>:redraw!<CR>
-
-function! ST() abort
-  let l:term = input('st: ')
-  if empty(l:term)
-    return
-  endif
-
-  silent! execute 'grep! ' . l:term
-
-  copen
-  redraw!
-endfunction
-nnoremap \ :call ST()<CR>
-
-function! SF() abort
-  let l:term = input('sf: ')
-  if empty(l:term)
+if executable('fzf') && executable('rg')
+  function! SS() abort
+    let term = expand('<cword>')
+    if empty(term)
       return
-  endif
-
-    let l:save_view = winsaveview()
-
-  silent! execute 'grep! --files --glob "*' . l:term . '*" ./'
-
-  let qf = getqflist()
-
-  let entries = []
-  for item in qf
-      if has_key(item, 'text') && !empty(item.text)
-          call add(entries, {
-                \ 'filename': item.text,
-                \ 'lnum': 1,
-                \ 'col': 1,
-                \ 'text': 'File match'
-                \ })
+    endif
+    let tmpfile = tempname()
+    silent execute '!rg --line-number --no-heading --color=never ' . shellescape(term) . ' | fzf > ' . shellescape(tmpfile)
+    redraw!
+    if filereadable(tmpfile)
+      let lines = readfile(tmpfile)
+      if !empty(lines) && lines[0] !=# ''
+        let parts = split(lines[0], ':', 3)
+        if len(parts) >= 2
+          execute 'edit ' . fnameescape(parts[0])
+          execute parts[1]
+        endif
       endif
-  endfor
+      call delete(tmpfile)
+    endif
+  endfunction
+  nnoremap S :call SS()<CR>
 
-  call setqflist(entries)
+  function! FF() abort
+    let tmpfile = tempname()
+    silent execute '!rg --files 2>/dev/null | fzf > ' . shellescape(tmpfile)
+    redraw!
+    if filereadable(tmpfile)
+      let lines = readfile(tmpfile)
+      if !empty(lines) && lines[0] !=# ''
+        execute 'edit ' . fnameescape(lines[0])
+      endif
+      call delete(tmpfile)
+    endif
+  endfunction
+  nnoremap <leader>f :call FF()<CR>
 
-  if !empty(entries)
-      copen
+  function! FS() abort
+    let term = input('search: ')
+    if empty(term)
+      return
+    endif
+    let tmpfile = tempname()
+    silent execute '!rg --line-number --no-heading --color=never ' . shellescape(term) . ' | fzf > ' . shellescape(tmpfile)
+    redraw!
+    if filereadable(tmpfile)
+      let lines = readfile(tmpfile)
+      if !empty(lines) && lines[0] !=# ''
+        let parts = split(lines[0], ':', 3)
+        if len(parts) >= 2
+          execute 'edit ' . fnameescape(parts[0])
+          execute parts[1]
+        endif
+      endif
+      call delete(tmpfile)
+    endif
+  endfunction
+  nnoremap \ :call FS()<CR>
+
+  function! SF() abort
+    let term = input('sf: ')
+    if empty(term)
+      return
+    endif
+    let tmpfile = tempname()
+    silent execute '!rg --files --glob ' . shellescape('*' . term . '*') . ' 2>/dev/null | fzf > ' . shellescape(tmpfile)
+    redraw!
+    if filereadable(tmpfile)
+      let lines = readfile(tmpfile)
+      if !empty(lines) && lines[0] !=# ''
+        execute 'edit ' . fnameescape(lines[0])
+      endif
+    call delete(tmpfile)
   endif
-
-  call winrestview(l:save_view)
-  redraw!
 endfunction
-nnoremap <leader>f :call SF()<CR>
+  nnoremap <leader>f :call SF()<CR>
+endif
 
 function! COPY()
   let l:save_reg = getreg('"')

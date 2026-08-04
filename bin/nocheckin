@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Find all files to be committed (respects .gitignore, staged files only)
+files=$(git diff --cached --name-only --diff-filter=ACM | grep -vE '^(vendor|node_modules|\.git/)')
+
+found=0
+matchfiles=()
+
+MSG="🚫 Commit aborted: @nocheckin found in staged files. Fix."
+
+for file in $files; do
+    # Only check if it's a file that exists (ignore deletes)
+    [ -f "$file" ] || continue
+    if grep -q "@nocheckin" "$file"; then
+        echo "🚫 $MSG $file"
+        found=1
+        matchfiles+=("$file")
+    fi
+done
+
+
+if [ $found -eq 1 ]; then
+    # Opening with editor, deduplicated
+    if [ ${#matchfiles[@]} -gt 0 ]; then
+        printf "%s\n" "${matchfiles[@]}" | uniq | xargs $EDITOR
+    fi
+    exit 1
+fi
+
+exit 0

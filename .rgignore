@@ -1,0 +1,17 @@
+# ctags
+tags
+
+# dependency directories
+node_modules/
+vendor/
+.venv/
+
+# lock files
+*.lock
+package-lock.json
+
+# minified files
+*.min.js
+*.min.css
+
+__pycache__/
