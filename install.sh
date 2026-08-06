@@ -57,22 +57,22 @@ install_packages() {
     elif [ "$OS" = "Linux" ]; then
         if command -v apt-get &>/dev/null; then
             sudo apt-get update -qq
-            sudo apt-get install -y fzf ripgrep tmux
+            sudo apt-get install -y fzf ripgrep tmux openssh wireguard-tools xclip
             if [ "$INSTALL_NVIM" = true ]; then
                 sudo apt-get install -y neovim
             fi
         elif command -v pacman &>/dev/null; then
-            sudo pacman -Sy --noconfirm fzf ripgrep tmux
+            sudo pacman -Sy --noconfirm fzf ripgrep tmux openssh wireguard-tools xclip
             if [ "$INSTALL_NVIM" = true ]; then
                 sudo pacman -Sy --noconfirm neovim
             fi
         elif command -v dnf &>/dev/null; then
-            sudo dnf install -y fzf ripgrep tmux
+            sudo dnf install -y fzf ripgrep tmux openssh wireguard-tools xclip
             if [ "$INSTALL_NVIM" = true ]; then
                 sudo dnf install -y neovim
             fi
         else
-            echo "Unsupported Linux package manager. Install fzf, ripgrep (and neovim) manually."
+            echo "Unsupported Linux package manager. Install fzf, ripgrep, openssh (and neovim) manually."
             exit 1
         fi
 
