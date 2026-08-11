@@ -105,7 +105,7 @@ install_bin() {
 }
 
 install_dotfiles() {
-    local files=(.vimrc .bashrc .rgignore)
+    local files=(.vimrc .bashrc .rgignore .bash_functions)
     if [ "$OS" = "Darwin" ]; then
         files+=(.skhdrc)
     fi
