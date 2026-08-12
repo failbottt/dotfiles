@@ -3,17 +3,25 @@
 #
 # useful for doing something like:
 #
-# ./script foo=bar
+# ./script foo=bar baz=foo
 #
 # and then $foo is assigned to "bar" in the script
-translate_key_vals_to_variables(params)
+translate_key_vals_to_variables()
 {
-    # have to use the -g flag to use the variables outside
-    # of this function scope. AFAIU they get cleaned up after
-    # the caller script finishes.
-    for arg in "${params}"; do
+    for arg in "$@"; do
         case "$arg" in
-            *=*) declare -g "${arg%%=*}=${arg#*=}" ;;
+            *=*) eval "${arg%%=*}=${arg#*=}" ;;
         esac
     done
+}
+
+# gets confirmation before continuing a script.
+#
+# y/Y are yes everything else aborts
+confirm()
+{
+    echo ""
+    read -r -p "$@ [yY]: " reply
+    [[ "$reply" =~ ^[yY]$ ]] || { echo "Aborted."; exit 1; }
+    echo ""
 }
