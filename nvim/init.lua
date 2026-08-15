@@ -123,32 +123,6 @@ require("lazy").setup({
           require('telescope').load_extension('fzf')
       end
   },
-
-  {
-      "sindrets/diffview.nvim",
-      dependencies = { "nvim-lua/plenary.nvim" },
-      config = function()
-          require("diffview").setup({
-              enhanced_diff_hl = true, -- Enhanced highlights
-              view = {
-                  merge_tool = {
-                      layout = "diff3_mixed", -- 3-way diff for merge conflicts
-                      disable_diagnostics = true,
-                  },
-              },
-              file_panel = {
-                  listing_style = "tree", -- "tree" or "list"
-                  win_config = { position = "left", width = 35 },
-              },
-          })
-      end,
-      cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFileHistory" },
-      keys = {
-          { "<leader>d", "<cmd>DiffviewOpen<CR>", desc = "Open Git Diff View" },
-          { "<leader>D", "<cmd>DiffviewFileHistory<CR>", desc = "File History (Git)" },
-          { "<leader>gx", "<cmd>DiffviewClose<CR>", desc = "Close Diff View" },
-      },
-  },
 })
 
 -- DIFFVIEW COLORS

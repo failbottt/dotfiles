@@ -34,8 +34,7 @@ ensure_git() {
 install_git_hook() {
     local hooks_dir="$HOME/.config/git/hooks"
     mkdir -p "$hooks_dir"
-    cp "$DOTFILES_DIR/bin/nocheckin" "$hooks_dir/pre-commit"
-    chmod +x "$hooks_dir/pre-commit"
+    cp "$DOTFILES_DIR/bin/nocheckin" "$hooks_dir/pre-commit" chmod +x "$hooks_dir/pre-commit"
     git config --global core.hooksPath "$hooks_dir"
     echo "nocheckin -> $hooks_dir/pre-commit (global pre-commit hook)"
 }
@@ -57,17 +56,17 @@ install_packages() {
     elif [ "$OS" = "Linux" ]; then
         if command -v apt-get &>/dev/null; then
             sudo apt-get update -qq
-            sudo apt-get install -y fzf ripgrep tmux openssh wireguard-tools xclip
+            sudo apt-get install -y fzf ripgrep tmux openssh wireguard-tools xclip ghostty
             if [ "$INSTALL_NVIM" = true ]; then
                 sudo apt-get install -y neovim
             fi
         elif command -v pacman &>/dev/null; then
-            sudo pacman -Sy --noconfirm fzf ripgrep tmux openssh wireguard-tools xclip
+            sudo pacman -Sy --noconfirm fzf ripgrep tmux openssh wireguard-tools xclip ghostty
             if [ "$INSTALL_NVIM" = true ]; then
                 sudo pacman -Sy --noconfirm neovim
             fi
         elif command -v dnf &>/dev/null; then
-            sudo dnf install -y fzf ripgrep tmux openssh wireguard-tools xclip
+            sudo dnf install -y fzf ripgrep tmux openssh wireguard-tools xclip ghostty
             if [ "$INSTALL_NVIM" = true ]; then
                 sudo dnf install -y neovim
             fi
