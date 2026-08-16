@@ -34,7 +34,7 @@ ensure_git() {
 install_git_hook() {
     local hooks_dir="$HOME/.config/git/hooks"
     mkdir -p "$hooks_dir"
-    cp "$DOTFILES_DIR/bin/nocheckin" "$hooks_dir/pre-commit" chmod +x "$hooks_dir/pre-commit"
+    cp "$DOTFILES_DIR/bin/nocheckin" "$hooks_dir/pre-commit" && chmod +x "$hooks_dir/pre-commit/nocheckin"
     git config --global core.hooksPath "$hooks_dir"
     echo "nocheckin -> $hooks_dir/pre-commit (global pre-commit hook)"
 }
@@ -51,27 +51,27 @@ install_packages() {
             brew install --cask ghostty
         fi
         if [ "$INSTALL_NVIM" = true ]; then
-            brew install neovim
+            brew install nvim
         fi
     elif [ "$OS" = "Linux" ]; then
         if command -v apt-get &>/dev/null; then
             sudo apt-get update -qq
-            sudo apt-get install -y fzf ripgrep tmux openssh wireguard-tools xclip ghostty
+            sudo apt-get install -y fzf ripgrep tmux openssh wireguard-tools xclip ghostty make gcc
             if [ "$INSTALL_NVIM" = true ]; then
-                sudo apt-get install -y neovim
+                sudo apt-get install -y nvim
             fi
         elif command -v pacman &>/dev/null; then
-            sudo pacman -Sy --noconfirm fzf ripgrep tmux openssh wireguard-tools xclip ghostty
+            sudo pacman -Sy --noconfirm fzf ripgrep tmux openssh wireguard-tools xclip ghostty make gcc ttf-hack man-db
             if [ "$INSTALL_NVIM" = true ]; then
-                sudo pacman -Sy --noconfirm neovim
+                sudo pacman -Sy --noconfirm nvim
             fi
         elif command -v dnf &>/dev/null; then
-            sudo dnf install -y fzf ripgrep tmux openssh wireguard-tools xclip ghostty
+            sudo dnf install -y fzf ripgrep tmux openssh wireguard-tools xclip ghostty make gcc
             if [ "$INSTALL_NVIM" = true ]; then
-                sudo dnf install -y neovim
+                sudo dnf install -y nvim
             fi
         else
-            echo "Unsupported Linux package manager. Install fzf, ripgrep, openssh (and neovim) manually."
+            echo "Unsupported Linux package manager. Install fzf, ripgrep, openssh (and nvim) manually."
             exit 1
         fi
 
@@ -84,6 +84,7 @@ install_packages() {
         exit 1
     fi
 }
+
 
 install_ghostty_config() {
     local dest="$HOME/.config/ghostty"
@@ -115,7 +116,7 @@ install_dotfiles() {
         fi
     done
 
-    if [ "$OS" = "Linux" ] && { [ -n "$DISPLAY" ] || command -v Xorg &>/dev/null || [ -e /usr/bin/X ]; }; then
+    if [ "$OS" = "Linux" ]; then
         for f in .xinitrc .xmodmap; do
             if [ -f "$DOTFILES_DIR/$f" ]; then
                 cp "$DOTFILES_DIR/$f" "$HOME/$f"

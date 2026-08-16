@@ -125,33 +125,6 @@ require("lazy").setup({
   },
 })
 
--- DIFFVIEW COLORS
---
--- Dark background diff color patch
-vim.api.nvim_set_hl(0, "DiffAdd", {
-  fg = "#B5F4A5",    -- soft green text
-  bg = "#1C2B1B",    -- very dark greenish background
-  blend = 0,
-})
-
-vim.api.nvim_set_hl(0, "DiffChange", {
-  fg = "#AAC7FF",    -- soft blue text
-  bg = "#1B2535",    -- very dark bluish background
-  blend = 0,
-})
-
-vim.api.nvim_set_hl(0, "DiffDelete", {
-  fg = "#FFBBBB",    -- soft pinkish text
-  bg = "#351B1B",    -- very dark reddish background
-  blend = 0,
-})
-
-vim.api.nvim_set_hl(0, "DiffText", {
-  fg = "#FFFFFF",    -- white text
-  bg = "#1F3552",    -- deep blue for intense changes
-  bold = true,
-  blend = 0,
-})
 
 -- TELESCOPE KEYMAPS
 --
@@ -236,21 +209,23 @@ end
 
 -- add the on_attach to each language server you want
 -- to use the keymaps above
-lspconfig.pylsp.setup{
-    on_attach = on_attach,
-}
-lspconfig.gopls.setup{
-    on_attach = on_attach,
-}
-lspconfig.intelephense.setup({
+vim.lsp.config("pylsp", {
+  on_attach = on_attach,
+})
+
+vim.lsp.config("gopls", {
+  on_attach = on_attach,
+})
+
+vim.lsp.config("intelephense", {
   on_attach = on_attach,
   settings = {
     intelephense = {
       environment = {
-        includePaths = {}, -- if you want to manually add folders
+        includePaths = {},
       },
       files = {
-        maxSize = 5000000, -- (optional) raise max file size if needed
+        maxSize = 5000000,
         exclude = {
           "**/vendor/**",
           "**/node_modules/**",
@@ -260,9 +235,17 @@ lspconfig.intelephense.setup({
     },
   },
 })
-lspconfig.clangd.setup{
-    on_attach = on_attach,
-}
+
+vim.lsp.config("clangd", {
+  on_attach = on_attach,
+})
+
+vim.lsp.enable({
+  "pylsp",
+  "gopls",
+  "intelephense",
+  "clangd",
+})
 
 -- FILES
 --
