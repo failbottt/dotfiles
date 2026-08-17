@@ -61,7 +61,7 @@ install_packages() {
                 sudo apt-get install -y nvim
             fi
         elif command -v pacman &>/dev/null; then
-            sudo pacman -Sy --noconfirm fzf ripgrep tmux openssh wireguard-tools xclip ghostty make gcc ttf-hack man-db
+            sudo pacman -Sy --noconfirm fzf ripgrep tmux openssh wireguard-tools xclip ghostty make gcc ttf-hack man-db man-pages
             if [ "$INSTALL_NVIM" = true ]; then
                 sudo pacman -Sy --noconfirm nvim
             fi
