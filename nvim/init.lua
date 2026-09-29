@@ -24,6 +24,7 @@ vim.opt.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
 vim.opt.signcolumn = "yes"
+vim.opt.splitright = true
 
 -- KEY MAPS
 --
@@ -98,32 +99,38 @@ require("lazy").setup({
   "neovim/nvim-lspconfig",
 
   {
-      "akinsho/toggleterm.nvim",
-      version = "*",
-      config = function()
-          require("toggleterm").setup({
-              start_in_insert = true,
-              open_mapping = [[<leader>t]],
-              direction = "float",
-              float_opts = {
-                border = "curved",
-                width = math.floor(vim.o.columns * 0.8),
-                height = math.floor(vim.o.lines * 0.8),
-                winblend = 0,
-              },
-              hidden = true,
-          })
-      end,
-  },
-
-  {
       'nvim-telescope/telescope-fzf-native.nvim',
       build = 'make',
       config = function()
           require('telescope').load_extension('fzf')
       end
   },
+
+  {
+    'vim-test/vim-test',
+    -- prevents the test from blocking... maybe I'll care idk...
+    -- dependencies = {
+    --   'tpope/vim-dispatch',    -- optional, for async runners
+    --   -- or you can omit this if you just want to use the built-in terminal strategy
+    -- },
+    config = function()
+      -- choose one of: 'neovim', 'dispatch', 'vimux', 'terminal', etc.
+      vim.g['test#strategy'] = 'neovim'
+      -- vim.g['test#strategy'] = 'dispatch'
+      -- vim.g['test#ruby#rspec#options'] = '--format documentation'  -- example per-language tweak
+    end,
+  },
 })
+
+-- VIM TEST
+--
+vim.api.nvim_set_keymap("n", "<leader>ts", ":TestSuite<CR>",    { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>tf", ":TestFile<CR>",     { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>tn", ":TestNearest<CR>",  { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>tl", ":TestLast<CR>",     { noremap = true, silent = true })
+-- navigate to the file's test if it exists
+vim.api.nvim_set_keymap("n", "<leader>tv", ":TestVisit<CR>",    { noremap = true, silent = true })
+vim.g["test#go#gotest#options"] = "-v"
 
 
 -- TELESCOPE KEYMAPS
@@ -209,23 +216,21 @@ end
 
 -- add the on_attach to each language server you want
 -- to use the keymaps above
-vim.lsp.config("pylsp", {
-  on_attach = on_attach,
-})
-
-vim.lsp.config("gopls", {
-  on_attach = on_attach,
-})
-
-vim.lsp.config("intelephense", {
+lspconfig.pylsp.setup{
+    on_attach = on_attach,
+}
+lspconfig.gopls.setup{
+    on_attach = on_attach,
+}
+lspconfig.intelephense.setup({
   on_attach = on_attach,
   settings = {
     intelephense = {
       environment = {
-        includePaths = {},
+        includePaths = {}, -- if you want to manually add folders
       },
       files = {
-        maxSize = 5000000,
+        maxSize = 5000000, -- (optional) raise max file size if needed
         exclude = {
           "**/vendor/**",
           "**/node_modules/**",
@@ -235,17 +240,9 @@ vim.lsp.config("intelephense", {
     },
   },
 })
-
-vim.lsp.config("clangd", {
-  on_attach = on_attach,
-})
-
-vim.lsp.enable({
-  "pylsp",
-  "gopls",
-  "intelephense",
-  "clangd",
-})
+lspconfig.clangd.setup{
+    on_attach = on_attach,
+}
 
 -- FILES
 --
@@ -312,7 +309,7 @@ end, { desc = "Copy Diagnostic Message" })
 --
 -- Set FloatBorder highlight
 vim.api.nvim_set_hl(0, "FloatBorder", { fg = "#ffffff", bg = "#000000" })
-vim.api.nvim_set_hl(0, "NormalFloat", { fg = "#000000", bg = "#000000" })
+vim.api.nvim_set_hl(0, "NormalFloat", { fg = "#ffffff", bg = "#000000" })
 
 -- Override open_floating_preview to set border highlight and max size
 local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
