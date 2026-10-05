@@ -1,0 +1,5 @@
+[user]
+	name = Michael Spangler
+	email = ms@michaelspangler.io
+[core]
+	hooksPath = ~/.config/git/hooks

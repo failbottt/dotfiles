@@ -193,8 +193,6 @@ end)
 
 -- LSP BASIC SETUP
 --
-local lspconfig = require('lspconfig')
-
 local on_attach = function(_, bufnr)
   local nmap = function(keys, func, desc)
     if desc then
@@ -214,16 +212,14 @@ local on_attach = function(_, bufnr)
   nmap('<leader>e', vim.diagnostic.open_float, 'Open Diagnostic Float')
 end
 
--- add the on_attach to each language server you want
--- to use the keymaps above
-lspconfig.pylsp.setup{
-    on_attach = on_attach,
-}
-lspconfig.gopls.setup{
-    on_attach = on_attach,
-}
-lspconfig.intelephense.setup({
-  on_attach = on_attach,
+-- apply the keymaps above to every buffer an LSP attaches to
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(args)
+    on_attach(vim.lsp.get_client_by_id(args.data.client_id), args.buf)
+  end,
+})
+
+vim.lsp.config('intelephense', {
   settings = {
     intelephense = {
       environment = {
@@ -240,9 +236,8 @@ lspconfig.intelephense.setup({
     },
   },
 })
-lspconfig.clangd.setup{
-    on_attach = on_attach,
-}
+
+vim.lsp.enable({ 'pylsp', 'gopls', 'intelephense', 'clangd' })
 
 -- FILES
 --

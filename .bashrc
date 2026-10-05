@@ -14,6 +14,8 @@ export PS1="\W\[\033[32m\]\$(parse_git_branch)\[\033[00m\] $ "
 # ---
 
 export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="/usr/local/go/bin:$HOME/go/bin:$PATH"
 
 export EDITOR=nvim
 
@@ -42,37 +44,6 @@ docker_fix_ssh() {
     ps aux | grep ssh | awk '{print $2}' | xargs kill -9
     eval `ssh-agent -s` && ssh-add ~/.ssh/id_rsa
 }
-
-vf()
-{
-    local file
-    file=$(rg --files | fzf --preview 'cat {}' --preview-window=up:60%) || return
-    vim "$file"
-}
-bind '"\C-f": "vf\n"'
-
-vg() {
-    local result
-    result=$(fzf --disabled \
-        --bind 'change:reload:rg --line-number --no-heading {q} . 2>/dev/null || true' \
-        --delimiter : \
-        --preview 'grep -n "" {1} | awk -v l={2} "NR==l{print \"\033[7m\" \$0 \"\033[0m\"; next} {print}"' \
-        --preview-window=up:60%:+{2} \
-        --prompt 'Search: ') || return
-    local file=$(echo "$result" | cut -d: -f1)
-    local line=$(echo "$result" | cut -d: -f2)
-    vim +"$line" "$file"
-}
-bind '"\C-g": "vg\n"'
-
-hsearch()
-{
-    local selected cmd
-    selected=$(history | fzf --tac --no-sort) || return
-    cmd=$(echo "$selected" | awk '{$1=""; print substr($0,2)}')
-    eval "$cmd"
-}
-bind '"\C-r": "hsearch\n"'
 
 # make autocomplete
 _makefile_targets() {

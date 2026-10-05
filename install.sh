@@ -3,10 +3,12 @@ set -e
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_NVIM=false
+INSTALL_GO=false
 
 for arg in "$@"; do
     case "$arg" in
         nvim) INSTALL_NVIM=true ;;
+        go) INSTALL_GO=true ;;
     esac
 done
 
@@ -33,10 +35,12 @@ ensure_git() {
 
 install_git_hook() {
     local hooks_dir="$HOME/.config/git/hooks"
-    mkdir -p "$hooks_dir"
-    cp "$DOTFILES_DIR/bin/nocheckin" "$hooks_dir/pre-commit" && chmod +x "$hooks_dir/pre-commit/nocheckin"
-    git config --global core.hooksPath "$hooks_dir"
-    echo "nocheckin -> $hooks_dir/pre-commit (global pre-commit hook)"
+    if [ ! -f "$hooks_dir/pre-commit" ]; then
+	    mkdir -p "$hooks_dir"
+	    cp "$DOTFILES_DIR/bin/nocheckin" "$hooks_dir/pre-commit" && chmod +x "$hooks_dir/pre-commit"
+	    git config --global core.hooksPath "$hooks_dir"
+	    echo "nocheckin -> $hooks_dir/pre-commit (global pre-commit hook)"
+    fi
 }
 
 install_packages() {
@@ -46,7 +50,7 @@ install_packages() {
             exit 1
         fi
         brew install fzf ripgrep tmux koekeishiya/formulae/skhd
-        brew services start skhd
+        # brew services start skhd
         if ! brew list --cask ghostty &>/dev/null 2>&1; then
             brew install --cask ghostty
         fi
@@ -105,7 +109,7 @@ install_bin() {
 }
 
 install_dotfiles() {
-    local files=(.vimrc .bashrc .rgignore .bash_functions)
+    local files=(.vimrc .bashrc .bash_profile .gitconfig .tmux.conf .rgignore .bash_functions .skhdrc .git-completion.bash)
     if [ "$OS" = "Darwin" ]; then
         files+=(.skhdrc)
     fi
@@ -144,6 +148,32 @@ install_nvim() {
     echo "nvim config -> $dest"
 }
 
+install_go() {
+    if [ "$OS" = "Darwin" ]; then
+        brew install go
+    elif [ "$OS" = "Linux" ]; then
+        # distro packages are often outdated, so use the official tarball
+        local version arch
+        version="$(curl -fsSL 'https://go.dev/VERSION?m=text' | head -n1)"
+        case "$(uname -m)" in
+            x86_64) arch=amd64 ;;
+            aarch64|arm64) arch=arm64 ;;
+            *) echo "Unsupported architecture for Go: $(uname -m)"; exit 1 ;;
+        esac
+        if [ "$(/usr/local/go/bin/go version 2>/dev/null | awk '{print $3}')" != "$version" ]; then
+            curl -fsSL "https://go.dev/dl/$version.linux-$arch.tar.gz" -o /tmp/go.tar.gz
+            sudo rm -rf /usr/local/go
+            sudo tar -C /usr/local -xzf /tmp/go.tar.gz
+            rm /tmp/go.tar.gz
+        fi
+        export PATH="/usr/local/go/bin:$PATH"
+    fi
+    echo "$(go version) installed"
+
+    go install golang.org/x/tools/gopls@latest
+    echo "gopls -> $(go env GOPATH)/bin/gopls"
+}
+
 echo "==> Ensuring git is installed..."
 ensure_git
 
@@ -170,6 +200,11 @@ install_dotfiles
 if [ "$INSTALL_NVIM" = true ]; then
     echo "==> Installing nvim config..."
     install_nvim
+fi
+
+if [ "$INSTALL_GO" = true ]; then
+    echo "==> Installing go and gopls..."
+    install_go
 fi
 
 echo "Done."
