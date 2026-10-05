@@ -6,7 +6,7 @@ defaults write com.apple.dock autohide-time-modifier -float 0.4
 killall Dock
 
 # key repeats
-defaults write -g InitialKeyRepeat -int 8
+defaults write -g InitialKeyRepeat -int 10
 defaults write -g KeyRepeat -int 1
 
 # show hidden files in finder
