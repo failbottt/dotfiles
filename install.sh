@@ -49,10 +49,13 @@ install_packages() {
             echo "Homebrew not found. Install it from https://brew.sh and re-run."
             exit 1
         fi
-        brew install fzf ripgrep tmux koekeishiya/formulae/skhd
+        brew install fzf ripgrep tmux koekeishiya/formulae/skhd rectangle
         # brew services start skhd
         if ! brew list --cask ghostty &>/dev/null 2>&1; then
             brew install --cask ghostty
+        fi
+        if ! brew list --cask docker-desktop &>/dev/null && [ ! -d /Applications/Docker.app ]; then
+            brew install --cask docker-desktop
         fi
         if [ "$INSTALL_NVIM" = true ]; then
             brew install nvim

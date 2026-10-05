@@ -17,6 +17,12 @@ export PATH="$HOME/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="/usr/local/go/bin:$HOME/go/bin:$PATH"
 
+# go version to use, installed with `goinstall <version>` (empty = system go)
+GO_VERSION=""
+if [ -n "$GO_VERSION" ] && [ -x "$HOME/sdk/go$GO_VERSION/bin/go" ]; then
+    export PATH="$HOME/sdk/go$GO_VERSION/bin:$PATH"
+fi
+
 export EDITOR=nvim
 
 # aliases

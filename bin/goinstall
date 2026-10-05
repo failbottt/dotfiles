@@ -1,0 +1,58 @@
+#!/bin/bash
+set -euo pipefail
+
+# usage: goinstall <version>   e.g. goinstall 1.27.1
+# installs to ~/sdk/go<version>; select it with GO_VERSION in .bashrc
+
+if [[ $# -ne 1 ]]; then
+    echo "usage: $(basename "$0") <version>   (e.g. 1.27.1)"
+    exit 1
+fi
+
+version="${1#go}"
+dest="$HOME/sdk/go$version"
+
+if [[ -x "$dest/bin/go" ]]; then
+    echo "go$version already installed at $dest"
+    exit 0
+fi
+
+case "$(uname -s)" in
+    Darwin) os=darwin ;;
+    Linux) os=linux ;;
+    *) echo "unsupported OS: $(uname -s)"; exit 1 ;;
+esac
+
+case "$(uname -m)" in
+    x86_64) arch=amd64 ;;
+    aarch64|arm64) arch=arm64 ;;
+    *) echo "unsupported architecture: $(uname -m)"; exit 1 ;;
+esac
+
+tarball="go$version.$os-$arch.tar.gz"
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+
+echo "downloading $tarball..."
+if ! curl -fsSL "https://dl.google.com/go/$tarball" -o "$tmp/$tarball"; then
+    echo "download failed: is go$version a real release? see https://go.dev/dl/"
+    exit 1
+fi
+
+expected="$(curl -fsSL "https://dl.google.com/go/$tarball.sha256")"
+if command -v sha256sum &>/dev/null; then
+    actual="$(sha256sum "$tmp/$tarball" | awk '{print $1}')"
+else
+    actual="$(shasum -a 256 "$tmp/$tarball" | awk '{print $1}')"
+fi
+if [[ "$expected" != "$actual" ]]; then
+    echo "checksum mismatch for $tarball"
+    exit 1
+fi
+
+mkdir -p "$tmp/extract" "$HOME/sdk"
+tar -C "$tmp/extract" -xzf "$tmp/$tarball"
+mv "$tmp/extract/go" "$dest"
+
+echo "go$version -> $dest"
+echo "to use it, set GO_VERSION=$version in ~/.bashrc"
