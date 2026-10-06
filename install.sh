@@ -49,7 +49,7 @@ install_packages() {
             echo "Homebrew not found. Install it from https://brew.sh and re-run."
             exit 1
         fi
-        brew install fzf ripgrep tmux koekeishiya/formulae/skhd rectangle
+        brew install fzf ripgrep tmux koekeishiya/formulae/skhd rectangle font-hack
         # brew services start skhd
         if ! brew list --cask ghostty &>/dev/null 2>&1; then
             brew install --cask ghostty
@@ -112,7 +112,7 @@ install_bin() {
 }
 
 install_dotfiles() {
-    local files=(.vimrc .bashrc .bash_profile .gitconfig .tmux.conf .rgignore .bash_functions .skhdrc .git-completion.bash)
+    local files=(.bashrc .bash_profile .gitconfig .tmux.conf .rgignore .bash_functions .skhdrc .git-completion.bash)
     if [ "$OS" = "Darwin" ]; then
         files+=(.skhdrc)
     fi
