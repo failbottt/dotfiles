@@ -372,40 +372,47 @@ end
 vim.api.nvim_create_user_command('CheckProviders', check_providers, {})
 
 if vim.fn.has('win32') then
-  vim.keymap.set('n', '<F11>', function()
-    local tab = vim.api.nvim_get_current_tabpage()
-    local wins = vim.api.nvim_tabpage_list_wins(tab)
-    for _, win in ipairs(wins) do
-      local buf = vim.api.nvim_win_get_buf(win)
-      if vim.api.nvim_buf_get_option(buf, 'buftype') == 'terminal'
-        and vim.api.nvim_buf_get_name(buf):find('build.bat') then
-        vim.api.nvim_set_current_win(win)
-        return
-      end
-    end
-    vim.cmd([[vertical botright split | terminal .\bin\build.bat]])
-  end)
+    vim.keymap.set('n', '<F11>', function()
+        local tab = vim.api.nvim_get_current_tabpage()
+        local wins = vim.api.nvim_tabpage_list_wins(tab)
+        for _, win in ipairs(wins) do
+            local buf = vim.api.nvim_win_get_buf(win)
+            if vim.api.nvim_buf_get_option(buf, 'buftype') == 'terminal'
+                and vim.api.nvim_buf_get_name(buf):find('build.bat') then
+                vim.api.nvim_set_current_win(win)
+                local channel = vim.api.nvim_buf_get_option(buf, 'channel')
+                if channel then
+                    vim.fn.chanclose(channel)
+                end
+                vim.cmd('terminal .\\bin\\build.bat')
+                -- Now safe to delete the old buffer (no window references it)
+                vim.api.nvim_buf_delete(buf, { force = true })
+                return
+            end
+        end
+        vim.cmd('vertical botright split | terminal .\\bin\\build.bat')
+    end)
 
-  vim.keymap.set('n', '<F10>', function()
-    local tab = vim.api.nvim_get_current_tabpage()
-    local wins = vim.api.nvim_tabpage_list_wins(tab)
-    for _, win in ipairs(wins) do
-      local buf = vim.api.nvim_win_get_buf(win)
-      if vim.api.nvim_buf_get_option(buf, 'buftype') == 'terminal'
-        and vim.api.nvim_buf_get_name(buf):find('build.bat') then
-        vim.api.nvim_set_current_win(win)
-        return
-      end
-    end
-    local cwd = vim.fn.getcwd()
-    local cmd = string.format(
-      'cmd /c .\\bin\\build.bat && C:\\Users\\mspangler\\Programs\\raddbg.exe --project:%s -- %s\\build\\win32_main.exe',
-      cwd, cwd
-    )
-    vim.cmd('vertical botright split | terminal ' .. cmd)
-  end)
+    vim.keymap.set('n', '<F10>', function()
+        local tab = vim.api.nvim_get_current_tabpage()
+        local wins = vim.api.nvim_tabpage_list_wins(tab)
+        for _, win in ipairs(wins) do
+            local buf = vim.api.nvim_win_get_buf(win)
+            if vim.api.nvim_buf_get_option(buf, 'buftype') == 'terminal'
+                and vim.api.nvim_buf_get_name(buf):find('build.bat') then
+                vim.api.nvim_set_current_win(win)
+                return
+            end
+        end
+        local cwd = vim.fn.getcwd()
+        local cmd = string.format(
+            '.\\bin\\build.bat && C:\\Users\\mspangler\\Programs\\raddbg.exe --project:%s -- %s\\build\\win32_main.exe',
+            cwd, cwd
+        )
+        vim.cmd('vertical botright split | terminal ' .. cmd)
+    end)
 
-  vim.keymap.set('n', '<F12>', function()
-    vim.cmd([[!.\bin\run.bat]])
-  end)
+    vim.keymap.set('n', '<F12>', function()
+        vim.cmd([[!.\bin\run.bat]])
+    end)
 end
